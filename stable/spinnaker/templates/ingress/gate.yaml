@@ -1,0 +1,22 @@
+{{- if .Values.deck.ingress.enabled }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx-external
+    kubernetes.io/tls-acme: "true"
+  name: {{ template "fullname" . }}-external
+spec:
+  rules:
+  - host: spinnaker.zapier.ninja
+    http:
+      paths:
+      - backend:
+          serviceName: {{ template "fullname" . }}-gate
+          servicePort: 8084
+        path: /webhooks/git/github
+  tls:
+  - secretName: spinnaker-tls
+    hosts:
+    - spinnaker.zapier.ninja
+{{- end }}
