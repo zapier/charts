@@ -4,11 +4,11 @@ metadata:
   name: {{ template "fullname" . }}-role
 rules:
 - apiGroups: ["extensions", "app"]
- resources: ["deployments", "replicasets", "ingresses", "horizontalpodautoscalers"]
- verbs: ["*"]
+  resources: ["deployments", "replicasets", "ingresses", "horizontalpodautoscalers"]
+  verbs: ["*"]
 - apiGroups: [""]
- resources: ["namespaces", "events", "replicationcontrollers"]
- verbs: ["get", "list"]
+  resources: ["namespaces", "events", "replicationcontrollers"]
+  verbs: ["get", "list"]
 - apiGroups: [""]
- resources: ["pods", "services", "secrets"]
- verbs: ["*"]
+  resources: ["pods", "services", "secrets"]
+  verbs: ["*"]
