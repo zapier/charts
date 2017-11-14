@@ -34,6 +34,9 @@ slack:
   token:
   botName: 'spinnakerbot'
 
+github:
+  token: '<INSERT GITHUB TOKEN HERE>'
+
 # Images for each component
 images:
   clouddriver: gcr.io/spinnaker-marketplace/clouddriver:1.0.0-20171108151529

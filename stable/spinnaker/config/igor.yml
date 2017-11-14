@@ -18,6 +18,11 @@ travis:
       address: ${services.travis.defaultMaster.address}
       githubToken: ${services.travis.defaultMaster.githubToken}
 
+github:
+  baseUrl: ${services.github.baseUrl}
+  accessToken: ${services.github.accessToken}
+  commitDisplayLength: ${services.github.commitDisplayLength}
+
 dockerRegistry:
   enabled: true
 

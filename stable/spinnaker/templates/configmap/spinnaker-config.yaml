@@ -440,6 +440,11 @@ data:
           username: admin
           password: admin
 
+      github:
+        baseUrl: "https://api.github.com"
+        accessToken: "{{ .Values.github.token }}"
+        commitDisplayLength: 8
+
       redis:
         host: {{ .Release.Name }}-redis
         port: 6379
