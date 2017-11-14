@@ -265,6 +265,9 @@ data:
           {{- if $account.passwordFile }}
           passwordFile: {{ $account.passwordFile }}
           {{- end }}
+          {{- if $account.catalogFile }}
+          catalogFile: {{ $account.catalogFile }}
+          {{- end }}
           {{ if $account.repositories }}
           repositories:
             {{- range $index, $repo := $account.repositories }}
