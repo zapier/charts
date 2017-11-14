@@ -255,10 +255,15 @@ data:
           address: {{ $account.address }}
           {{- if $account.username }}
           username: {{ $account.username }}
+          {{- if $account.email }}
           email: {{ $account.email }}
+          {{- end }}
           {{- end }}
           {{- if $account.password }}
           passwordFile: /tmp/registry/password-{{ $account.name }}
+          {{- end }}
+          {{- if $account.passwordFile }}
+          passwordFile: {{ $account.passwordFile }}
           {{- end }}
           {{ if $account.repositories }}
           repositories:
