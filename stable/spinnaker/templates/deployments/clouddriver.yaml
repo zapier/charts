@@ -30,12 +30,22 @@ spec:
               name: {{ template "fullname" . }}-spinnaker-config
             - mountPath: /tmp/registry
               name: {{ template "fullname" . }}-registry
+            - mountPath: /opt/passwords
+              name: token-refresh-shared
           readinessProbe:
             httpGet:
               path: /health
               port: 7002
             initialDelaySeconds: 20
             timeoutSeconds: 1
+        - image: quay.io/skuid/ecr-token-refresh:latest
+          name: ecr-token-refresh
+          imagePullPolicy: Always
+          volumeMounts:
+           - name: token-refresh-config
+             mountPath: /opt/config/ecr-token-refresh
+           - name: token-refresh-shared
+             mountPath: /opt/passwords
       volumes:
         - name: {{ template "fullname" . }}-spinnaker-config
           configMap:
@@ -43,3 +53,8 @@ spec:
         - name: {{ template "fullname" . }}-registry
           secret:
             secretName: {{ template "fullname" . }}-registry
+        - name: token-refresh-shared # shared volume
+          emptyDir: {}
+        - name: token-refresh-config
+          configMap:
+            name: {{ template "fullname" . }}-spinnaker-config

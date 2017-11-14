@@ -5,6 +5,12 @@ metadata:
   labels:
     app: {{ template "fullname" . }}
 data:
+  config.yaml: |-
+    interval: 30m
+    registries:
+      - registryId: "{{ .Values.ecr.registryId }}"
+        region: "{{ .Values.ecr.region }}"
+        passwordFile: "{{ .Values.ecr.passwordFile }}"
   clouddriver.yml: |
     server:
       port: ${services.clouddriver.port:7002}
