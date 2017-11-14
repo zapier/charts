@@ -32,6 +32,8 @@ spec:
               name: {{ template "fullname" . }}-registry
             - mountPath: /opt/passwords
               name: token-refresh-shared
+            - mountPath: /opt/catalog/
+              name: ecr-catalog-shared
           readinessProbe:
             httpGet:
               path: /health
@@ -46,6 +48,12 @@ spec:
              mountPath: /opt/config/ecr-token-refresh
            - name: token-refresh-shared
              mountPath: /opt/passwords
+        - image: zapier/ecr-catalog-refresh
+          name: ecr-catalog-refresh
+          imagePullPolicy: Always
+          volumeMounts:
+           - name: ecr-catalog-shared
+             mountPath: /opt/catalog/
       volumes:
         - name: {{ template "fullname" . }}-spinnaker-config
           configMap:
@@ -58,3 +66,5 @@ spec:
         - name: token-refresh-config
           configMap:
             name: {{ template "fullname" . }}-spinnaker-config
+        - name: ecr-catalog-shared
+          emptyDir: {}
