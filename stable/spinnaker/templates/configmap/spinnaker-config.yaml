@@ -5,6 +5,12 @@ metadata:
   labels:
     app: {{ template "fullname" . }}
 data:
+  config.yaml: |-
+    interval: 2m
+    registries:
+      - registryId: "{{ .Values.ecr.registryId }}"
+        region: "{{ .Values.ecr.region }}"
+        passwordFile: "{{ .Values.ecr.passwordFile }}"
   clouddriver.yml: |
     server:
       port: ${services.clouddriver.port:7002}
@@ -236,6 +242,7 @@ data:
       enabled: true
       accounts:
         - name: local
+          serviceAccount: true
           dockerRegistries:
             {{- range $index, $account := .Values.accounts }}
             - accountName: {{ $account.name }}
@@ -249,10 +256,18 @@ data:
           address: {{ $account.address }}
           {{- if $account.username }}
           username: {{ $account.username }}
+          {{- if $account.email }}
           email: {{ $account.email }}
+          {{- end }}
           {{- end }}
           {{- if $account.password }}
           passwordFile: /tmp/registry/password-{{ $account.name }}
+          {{- end }}
+          {{- if $account.passwordFile }}
+          passwordFile: {{ $account.passwordFile }}
+          {{- end }}
+          {{- if $account.catalogFile }}
+          catalogFile: {{ $account.catalogFile }}
           {{- end }}
           {{ if $account.repositories }}
           repositories:
@@ -425,6 +440,11 @@ data:
           baseUrl: http://{{ .Release.Name }}-jenkins:8080/
           username: admin
           password: admin
+
+      github:
+        baseUrl: "https://api.github.com"
+        accessToken: "{{ .Values.github.token }}"
+        commitDisplayLength: 8
 
       redis:
         host: {{ .Release.Name }}-redis

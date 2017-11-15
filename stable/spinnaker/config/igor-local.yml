@@ -10,6 +10,11 @@ jenkins:
       username: ${services.jenkins.defaultMaster.username}
       password: ${services.jenkins.defaultMaster.password}
 
+github:
+  baseUrl: ${services.github.baseUrl}
+  accessToken: ${services.github.accessToken}
+  commitDisplayLength: ${services.github.commitDisplayLength}
+
 dockerRegistry:
   enabled: true
 

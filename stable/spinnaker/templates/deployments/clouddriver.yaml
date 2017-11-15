@@ -18,6 +18,7 @@ spec:
         app: {{ template "fullname" . }}
         component: clouddriver
     spec:
+      serviceAccountName: {{ template "fullname" . }}
       containers:
         - image: {{ .Values.images.clouddriver }}
           name: clouddriver
@@ -29,12 +30,42 @@ spec:
               name: {{ template "fullname" . }}-spinnaker-config
             - mountPath: /tmp/registry
               name: {{ template "fullname" . }}-registry
+            - mountPath: /opt/passwords
+              name: token-refresh-shared
+            - mountPath: /opt/catalog/
+              name: ecr-catalog-shared
           readinessProbe:
             httpGet:
               path: /health
               port: 7002
             initialDelaySeconds: 20
             timeoutSeconds: 1
+        - image: quay.io/skuid/ecr-token-refresh:latest
+          name: ecr-token-refresh
+          imagePullPolicy: Always
+          env:
+            - name: AWS_DEFAULT_REGION
+              value: {{ .Values.ecr.region }}
+          volumeMounts:
+           - name: token-refresh-config
+             mountPath: /opt/config/ecr-token-refresh
+           - name: token-refresh-shared
+             mountPath: /opt/passwords
+        - image: zapier/ecr-catalog-refresh
+          env:
+            - name: AWS_DEFAULT_REGION
+              value: {{ .Values.ecr.region }}
+          command: 
+            - /bin/ecr-refresh-catalog
+            - --catalog-file
+            - /opt/catalog/repos.json
+            - --registry-id
+            - "{{ .Values.ecr.registryId }}"
+          name: ecr-catalog-refresh
+          imagePullPolicy: Always
+          volumeMounts:
+           - name: ecr-catalog-shared
+             mountPath: /opt/catalog/
       volumes:
         - name: {{ template "fullname" . }}-spinnaker-config
           configMap:
@@ -42,3 +73,10 @@ spec:
         - name: {{ template "fullname" . }}-registry
           secret:
             secretName: {{ template "fullname" . }}-registry
+        - name: token-refresh-shared # shared volume
+          emptyDir: {}
+        - name: token-refresh-config
+          configMap:
+            name: {{ template "fullname" . }}-spinnaker-config
+        - name: ecr-catalog-shared
+          emptyDir: {}
