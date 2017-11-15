@@ -6,7 +6,7 @@ metadata:
     app: {{ template "fullname" . }}
 data:
   config.yaml: |-
-    interval: 30m
+    interval: 2m
     registries:
       - registryId: "{{ .Values.ecr.registryId }}"
         region: "{{ .Values.ecr.region }}"

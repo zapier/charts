@@ -43,14 +43,24 @@ spec:
         - image: quay.io/skuid/ecr-token-refresh:latest
           name: ecr-token-refresh
           imagePullPolicy: Always
+          env:
+            - name: AWS_DEFAULT_REGION
+              value: {{ .Values.ecr.region }}
           volumeMounts:
            - name: token-refresh-config
              mountPath: /opt/config/ecr-token-refresh
            - name: token-refresh-shared
              mountPath: /opt/passwords
-        - image: zapier/ecr-catalog-refres
-          args:
-            - --registry-id {{ .Values.ecr.registryId }}
+        - image: zapier/ecr-catalog-refresh
+          env:
+            - name: AWS_DEFAULT_REGION
+              value: {{ .Values.ecr.region }}
+          command: 
+            - /bin/ecr-refresh-catalog
+            - --catalog-file
+            - /opt/catalog/repos.json
+            - --registry-id
+            - "{{ .Values.ecr.registryId }}"
           name: ecr-catalog-refresh
           imagePullPolicy: Always
           volumeMounts:
