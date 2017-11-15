@@ -48,7 +48,9 @@ spec:
              mountPath: /opt/config/ecr-token-refresh
            - name: token-refresh-shared
              mountPath: /opt/passwords
-        - image: zapier/ecr-catalog-refresh
+        - image: zapier/ecr-catalog-refres
+          args:
+            - --registry-id {{ .Values.ecr.registryId }}
           name: ecr-catalog-refresh
           imagePullPolicy: Always
           volumeMounts:
