@@ -11,13 +11,18 @@ spec:
   rules:
   - host: {{ .Values.Master.ExternalHostName | quote }}
     http:
-      paths:
+      {{- if .Values.Master.ExternalIngress.Paths }}
+      {{- range .Values.Master.ExternalIngress.Paths }}
       - backend:
           serviceName: {{ template "jenkins.fullname" . }}
           servicePort: {{ .Values.Master.ServicePort }}
-        {{- if .Values.Master.ExternalIngress.BackendPath }}
-        path: {{ .Values.Master.ExternalIngress.BackendPath }}
-        {{- end }}
+        path: {{ . }}
+      {{- end }}
+      {{- else }}
+      - backend:
+          serviceName: {{ template "jenkins.fullname" . }}
+          servicePort: {{ .Values.Master.ServicePort }}
+      {{- end }}
 {{- if .Values.Master.ExternalIngress.TLS }}
   tls:
 {{ toYaml .Values.Master.ExternalIngress.TLS | indent 4 }}
